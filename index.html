@@ -57,6 +57,8 @@ h1 .hard{font-weight:700;font-size:clamp(34px,5.6vw,58px);line-height:1.05;margi
 .field{display:grid;gap:8px}
 .field label,.past>label{font:600 14px/1.2 var(--sans)}
 .hint{font-size:12.5px;color:var(--muted);line-height:1.45}
+.todayfix{font-size:11.5px;color:var(--muted);line-height:1.45}
+.todayfix b{font:600 11.5px var(--mono);color:var(--ink)}
 .row{display:flex;gap:8px;align-items:center}
 .row input[type=range]{flex:1;min-width:0;margin:0;height:28px}
 input[type=number],select{width:100%;height:44px;font:500 15px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 12px}
@@ -67,7 +69,7 @@ input[type=range]{width:100%;accent-color:var(--red)}
 .affix span{position:absolute;top:50%;transform:translateY(-50%);font:500 14px var(--mono);color:var(--muted);pointer-events:none}
 .affix .pre{left:12px}.affix .post{right:12px}
 .affix.has-pre input{padding-left:26px}.affix.has-post input{padding-right:30px}
-.rate-num{flex:0 0 72px}
+.rate-num{flex:0 0 84px}
 .rate-num .post{right:7px;font-size:12px}
 .rate-num input{width:100%;height:38px;font:600 14.5px var(--mono);color:var(--red-ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:0 18px 0 4px;text-align:right}
 .rate-num input:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
@@ -230,10 +232,10 @@ footer{display:grid;gap:18px;font-size:12.5px;color:var(--muted);border-top:1px 
       <div class="field">
         <label for="newRate">Today's rate</label>
         <div class="row">
-          <input id="newRateR" type="range" min="2.5" max="10" step="0.125" value="7.451" aria-label="Today's rate slider">
-          <div class="affix has-post rate-num"><input id="newRate" type="text" inputmode="decimal" value="7.451" aria-label="Today's rate in percent"><span class="post">%</span></div>
+          <input id="newRateR" type="range" min="2.5" max="10" step="0.125" value="7.424" aria-label="Today's rate slider">
+          <div class="affix has-post rate-num"><input id="newRate" type="text" inputmode="decimal" value="7.424" aria-label="Today's rate in percent"><span class="post">%</span></div>
         </div>
-        <div class="hint" id="todayHint">Optimal Blue 30-year conforming average, Oct 6, 2026.</div>
+        <div class="todayfix" id="todayFixed">Today's rate: <b id="todayFixedRate">7.424%</b> · <span id="todayFixedSrc">Optimal Blue 30-year conforming average, Oct 8, 2026</span></div>
       </div>
 
       <details>
@@ -356,11 +358,11 @@ footer{display:grid;gap:18px;font-size:12.5px;color:var(--muted);border-top:1px 
   // Conventional PMI estimated for a 740-759 credit score, borrower-paid monthly. FHA: 1.75% upfront MIP + 0.55% annual.
   // VA: 2.15% first-use funding fee, no monthly insurance.
   const LOANS = {
-    c20: { name:'Conventional, 20% down', down:0.20,  mi:0,      fee:0,      cap:0.06, today:7.451, src:'30-year conforming', asof:'Oct 6, 2026', spread:0 },
-    c10: { name:'Conventional, 10% down', down:0.10,  mi:0.0036, fee:0,      cap:0.06, today:7.451, src:'30-year conforming', asof:'Oct 6, 2026', spread:0 },
-    c5:  { name:'Conventional, 5% down',  down:0.05,  mi:0.0052, fee:0,      cap:0.03, today:7.451, src:'30-year conforming', asof:'Oct 6, 2026', spread:0 },
-    fha: { name:'FHA, 3.5% down',         down:0.035, mi:0.0055, fee:0.0175, cap:0.06, today:7.169, src:'30-year FHA',        asof:'Oct 6, 2026', spread:-0.282 },
-    va:  { name:'VA, 0% down',            down:0,     mi:0,      fee:0.0215, cap:0.04, today:7.079, src:'30-year VA',         asof:'Oct 6, 2026', spread:-0.372 }
+    c20: { name:'Conventional, 20% down', down:0.20,  mi:0,      fee:0,      cap:0.06, today:7.424, src:'30-year conforming', asof:'Oct 8, 2026', spread:0 },
+    c10: { name:'Conventional, 10% down', down:0.10,  mi:0.0036, fee:0,      cap:0.06, today:7.424, src:'30-year conforming', asof:'Oct 8, 2026', spread:0 },
+    c5:  { name:'Conventional, 5% down',  down:0.05,  mi:0.0052, fee:0,      cap:0.03, today:7.424, src:'30-year conforming', asof:'Oct 8, 2026', spread:0 },
+    fha: { name:'FHA, 3.5% down',         down:0.035, mi:0.0055, fee:0.0175, cap:0.06, today:7.176, src:'30-year FHA',        asof:'Oct 8, 2026', spread:-0.248 },
+    va:  { name:'VA, 0% down',            down:0,     mi:0,      fee:0.0215, cap:0.04, today:7.088, src:'30-year VA',         asof:'Oct 8, 2026', spread:-0.336 }
   };
   const HINTS = {
     c20: 'No mortgage insurance at 20% down.',
@@ -585,7 +587,8 @@ footer{display:grid;gap:18px;font-size:12.5px;color:var(--muted);border-top:1px 
     document.querySelectorAll('#loanChips button').forEach(b => b.setAttribute('aria-pressed', b.dataset.loan === key));
     $('loanHint').textContent = HINTS[key];
     $('newRate').value = L.today.toFixed(3); $('newRateR').value = L.today;
-    $('todayHint').textContent = 'Optimal Blue ' + L.src + ' average, ' + L.asof + '.';
+    $('todayFixedRate').textContent = L.today.toFixed(3) + '%';
+    $('todayFixedSrc').textContent = 'Optimal Blue ' + L.src + ' average, ' + L.asof;
     if ($('past').value) applyPast(); else render();
   }
   document.querySelectorAll('#loanChips button').forEach(b => b.addEventListener('click', () => setLoan(b.dataset.loan)));
@@ -630,7 +633,7 @@ footer{display:grid;gap:18px;font-size:12.5px;color:var(--muted);border-top:1px 
     if (Array.isArray(d.monthly) && d.monthly.length){ PAST = d.monthly; buildPast(); }
     setLoan(loanKey);
   }
-  if (window.fetch) fetch('rates.json', {cache:'no-cache'}).then(r => r.ok ? r.json() : null).then(applyLive).catch(() => {});
+  if (window.fetch) fetch('https://rates.1aaronscott.com/rates.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.ok ? r.json() : null).then(applyLive).catch(() => {});
 })();
 </script>
 

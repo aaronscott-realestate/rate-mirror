@@ -1,18 +1,18 @@
 {
-  "updated": "2026-11-09T18:09:14.594Z",
+  "updated": "2026-11-10T20:29:28.115Z",
   "source": "Optimal Blue Mortgage Market Indices, retrieved from FRED, Federal Reserve Bank of St. Louis",
   "today": {
     "conv": {
-      "rate": 7.087,
-      "date": "2026-11-06"
+      "rate": 7.045,
+      "date": "2026-11-09"
     },
     "fha": {
-      "rate": 6.889,
-      "date": "2026-11-06"
+      "rate": 6.869,
+      "date": "2026-11-09"
     },
     "va": {
-      "rate": 6.672,
-      "date": "2026-11-06"
+      "rate": 6.642,
+      "date": "2026-11-09"
     }
   },
   "monthly": [
